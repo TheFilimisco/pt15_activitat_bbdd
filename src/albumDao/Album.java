@@ -1,14 +1,16 @@
 package albumDao;
 
+import artistDao.Artist;
+
 public class Album {
     private int idAlbum;
     private String nom;
-    private int idArtista;
+    private Artist artist;
 
-    public Album(int idAlbum, String nom, int idArtista) {
+    public Album(int idAlbum, String nom, Artist artist) {
         this.idAlbum = idAlbum;
         this.nom = nom;
-        this.idArtista = idArtista;
+        this.artist = artist;
     }
 
     public Album() {
@@ -30,19 +32,20 @@ public class Album {
         this.nom = nom;
     }
 
-    public int getIdArtista() {
-        return idArtista;
+    public Artist getArtist() {
+        return artist;
     }
 
-    public void setIdArtista(int idArtista) {
-        this.idArtista = idArtista;
+    public void setArtist(Artist artist) {
+        this.artist = artist;
     }
 
     @Override
     public String toString() {
-        return "\nAlbum: " +
-                "id=" + idAlbum +
+        return "Album{" +
+                "idAlbum=" + idAlbum +
                 ", nom='" + nom + '\'' +
-                ", artista id=" + idArtista;
+                ", artist=" + artist +
+                '}';
     }
 }

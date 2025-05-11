@@ -1,4 +1,9 @@
 package albumDao;
+import artistDao.Artist;
+import artistDao.ArtistDAO;
+import artistDao.ArtistDAOImplementacio;
+import sqlInjection.Connexio;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +14,7 @@ import java.util.List;
 public class AlbumDaoImplementacio implements AlbumDao{
 
     static Connection con = Connexio.getConnection();
+    ArtistDAO artistDao = new ArtistDAOImplementacio();
 
     @Override
     public int create(Album album) throws SQLException
@@ -16,7 +22,7 @@ public class AlbumDaoImplementacio implements AlbumDao{
         String query = "insert into Album(Title, ArtistId) VALUES (?, ?)";
         PreparedStatement ps = con.prepareStatement(query);
         ps.setString(1, album.getNom());
-        ps.setInt(2, album.getIdArtista());
+        ps.setInt(2, album.getArtist().getIdArtist());
         ps.executeUpdate();
         // Obtenim claus autogenerades
         ResultSet rs = ps.getGeneratedKeys();
@@ -42,9 +48,10 @@ public class AlbumDaoImplementacio implements AlbumDao{
             check = true;
             album.setIdAlbum(rs.getInt("AlbumId"));
             album.setNom(rs.getString("Title"));
-            album.setIdArtista(rs.getInt("ArtistId"));
+/*            album.setArtist();setIdArtista(rs.getInt("ArtistId"));*/
+            Artist artist = artistDao.read(rs.getInt("ArtistId"));
+            album.setArtist(artist);
         }
-
         if (check == true) {
             return album;
         }
@@ -58,7 +65,7 @@ public class AlbumDaoImplementacio implements AlbumDao{
         String query= "update Album set Title=?, ArtistId= ? where AlbumId = ?";
         PreparedStatement ps = con.prepareStatement(query);
         ps.setString(1, album.getNom());
-        ps.setInt(2, album.getIdArtista());
+        ps.setInt(2, album.getArtist().getIdArtist());
         ps.setInt(3, album.getIdAlbum());
         ps.executeUpdate();
     }
@@ -76,16 +83,26 @@ public class AlbumDaoImplementacio implements AlbumDao{
     @Override
     public List<Album> getAlbums() throws SQLException
     {
+/*        String query = "select  " +
+                "Album.AlbumId as albumId, " +
+                "Album.Title as albumTitle, " +
+                "Artist.ArtistId as artistId, " +
+                "Artist.Name as artistName " +
+                "from Album join Artist on Album.ArtistId = Artist.ArtistId";*/
         String query = "select * from Album";
+
         PreparedStatement ps = con.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         List<Album> ls = new ArrayList();
 
         while (rs.next()) {
             Album album = new Album();
-            album.setIdAlbum(rs.getInt("AlbumId"));
+            album.setIdAlbum(rs.getInt("albumId"));
             album.setNom(rs.getString("Title"));
-            album.setIdArtista(rs.getInt("ArtistId"));
+/*            artist.setIdArtist(rs.getInt("artistId"));
+            artist.setNameArtist(rs.getString("artistName"));*/
+            Artist artist = artistDao.read(rs.getInt("ArtistId"));
+            album.setArtist(artist);
             ls.add(album);
         }
         return ls;

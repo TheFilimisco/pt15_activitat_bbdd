@@ -1,5 +1,8 @@
 package albumDao;
 
+import artistDao.Artist;
+import sqlInjection.Connexio;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -29,7 +32,7 @@ public class MainDAO
         while (opcio!=0){
             switch(opcio){
                 case 1: {
-                    System.out.println(albumDao.getAlbums());
+                    albumDao.getAlbums().forEach(System.out::println);
                     break;
                 }
                 case 2:{
@@ -43,7 +46,9 @@ public class MainDAO
                     String titol = sc.nextLine();
                     System.out.println("Introdueix idArtista nou");
                     int idArtista = sc.nextInt();sc.nextLine();
-                    System.out.println("Creat album: " + albumDao.create(new Album(0, titol, idArtista)));
+                    Artist artist = new Artist();
+                    artist.setIdArtist(idArtista);
+                    System.out.println("Creat album: " + albumDao.create(new Album(0, titol,artist)));
                     break;
                 }
                 case 4:{
@@ -53,7 +58,9 @@ public class MainDAO
                     String titol = sc.nextLine();
                     System.out.println("Introdueix el idArtista nou");
                     int idArtista = sc.nextInt();sc.nextLine();
-                    albumDao.update(new Album(idAlbum, titol, idArtista));
+                    Artist artist = new Artist();
+                    artist.setIdArtist(idArtista);
+                    albumDao.update(new Album(idAlbum, titol, artist));
                     break;
                 }
                 case 5:{
